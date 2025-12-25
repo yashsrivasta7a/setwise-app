@@ -1,5 +1,6 @@
 const { getDefaultConfig } = require("expo/metro-config");
-const path = require('path');
+const path = require("path");
+const { withNativeWind } = require("nativewind/metro");
 
 const config = getDefaultConfig(__dirname);
 
@@ -8,10 +9,10 @@ const { resolveRequest: originalResolveRequest } = config.resolver;
 
 config.resolver.resolveRequest = (context, moduleName, platform) => {
   // Fix for @clerk/shared/error resolution issue
-  if (moduleName === '@clerk/shared/error') {
+  if (moduleName === "@clerk/shared/error") {
     return {
-      filePath: path.resolve(__dirname, 'node_modules/@clerk/shared/dist/runtime/error.js'),
-      type: 'sourceFile',
+      filePath: path.resolve(__dirname, "node_modules/@clerk/shared/dist/runtime/error.js"),
+      type: "sourceFile",
     };
   }
 
@@ -22,4 +23,4 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
   return context.resolveRequest(context, moduleName, platform);
 };
 
-module.exports = config;
+module.exports = withNativeWind(config, { input: "./src/global.css" });
